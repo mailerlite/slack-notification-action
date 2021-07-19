@@ -6,7 +6,7 @@ Used for sending slack notifications based on status of deployment
 
 ### `workflow.yml` Example
 
-#### Run using CloudFlare auth token
+#### Run using slack webhook url
 ```yaml
     - name: Slack Notification
       uses: remotecompany/slack-notification-action@v0.0.1
