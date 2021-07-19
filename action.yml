@@ -1,0 +1,13 @@
+name: "Slack Notification Block Action"
+description: "Send a slack notification with block data"
+author: robgordon89
+inputs:
+  slack_webhook:
+    description: "A valid Slack Incoming Webhook"
+    required: true
+  status:
+    description: Specify success / failure or cancelled.
+    required: true
+runs:
+  using: "node12"
+  main: "dist/index.js"

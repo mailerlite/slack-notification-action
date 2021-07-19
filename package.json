@@ -1,0 +1,21 @@
+{
+  "name": "slack-notification-action",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "scripts": {
+    "build": "ncc build index.js -o dist",
+    "test": "jest"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@actions/core": "^1.4.0",
+    "@actions/github": "^5.0.0",
+    "@slack/webhook": "^6.0.0",
+    "@vercel/ncc": "^0.28.6",
+    "dotenv": "^10.0.0",
+    "jest": "^27.0.6",
+    "underscore": "^1.13.1"
+  }
+}
