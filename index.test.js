@@ -10,6 +10,6 @@ test('test runs', () => {
   for (const k in envConfig) {
     process.env[k] = envConfig[k]
   }
-  const ep = path.join(__dirname, 'main.js');
+  const ep = path.join(__dirname, 'index.js');
   console.log(cp.execSync(`node ${ep}`, { env: process.env }).toString());
 })

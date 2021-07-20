@@ -6816,7 +6816,6 @@ const statusMap = {
   "cancelled": "Canceled"
 };
 
-
 /**
  * Are we runnign inside jest (testing)
  * @return {boolean} If we are in jest or not.
@@ -6907,11 +6906,14 @@ async function run() {
   let statusCode = getStatusCode(status);
 
   var buttonStyle = ''
+  var emojiIcon = ':o:'
 
   if (statusCode === 1) {
     buttonStyle = "primary"
+    emojiIcon = ":rocket:"
   } else if (statusCode === 3) {
     buttonStyle = "danger"
+    emojiIcon = ":x:"
   }
 
   let environment = getEnvironment(ref);
@@ -6920,9 +6922,7 @@ async function run() {
   const repoTitle = getRepositoryTitle(repository)
 
   // Initialize with defaults
-  const webhook = new IncomingWebhook(url, {
-    icon_emoji: ':bowtie:',
-  });
+  const webhook = new IncomingWebhook(url, {});
 
   const msg = {
     "blocks": [
@@ -6930,7 +6930,7 @@ async function run() {
         "type": "header",
         "text": {
           "type": "plain_text",
-          "text": `:rocket: ${repoTitle} - ${statusMap[status]}`
+          "text": `${emojiIcon} ${repoTitle} - ${statusMap[status]}`
         }
       },
       {
