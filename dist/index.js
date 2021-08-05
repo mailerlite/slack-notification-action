@@ -12616,8 +12616,8 @@ async function getCommitMessages() {
 
   switch (event) {
     case 'pull_request': {
-      const pr_title = github.context.payload.pull_request?.title
-      const pr_number = github.context.payload.pull_request?.number
+      const pr_title = github.context.payload.pull_request.title
+      const pr_number = github.context.payload.pull_request.number
 
       const octokit = github.getOctokit(token)
 
@@ -12673,7 +12673,7 @@ async function run() {
 
   let messageTemplate = ''
   if (pr_title != "") {
-    const pr_number = github.context.payload.pull_request?.number
+    const pr_number = github.context.payload.pull_request.number
     messageTemplate = `<https://github.com/${owner}/${repo}/pull/${pr_number}|*_${pr_title}_*> \n ${ellipsis(commit_msg, 100)}`
   } else {
     messageTemplate = `*_${ellipsis(commit_msg, 100)}_*`
