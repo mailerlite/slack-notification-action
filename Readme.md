@@ -9,7 +9,7 @@ Used for sending slack notifications based on status of deployment
 #### Run using slack webhook url
 ```yaml
     - name: Slack Notification
-      uses: remotecompany/slack-notification-action@v0.0.2
+      uses: remotecompany/slack-notification-action@v1
       with:
         slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
         status: ${{ job.status }}
