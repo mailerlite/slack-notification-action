@@ -19,6 +19,8 @@ Used for sending slack notifications based on status of deployment
 
 Setup .env file from .env.example `cp .env.example .env`
 
+Add a Github token to the ENV, and setup the event.json with data (PR number etc)
+
 ```shell
 yarn install
 yarn test

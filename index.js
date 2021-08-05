@@ -1,13 +1,16 @@
 const _ = require('underscore')
 const core = require('@actions/core');
+const github = require('@actions/github');
 const { IncomingWebhook } = require('@slack/webhook');
 
 const sha = process.env.GITHUB_SHA;
-const repository = process.env.GITHUB_REPOSITORY;
+const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/");
 const actor = process.env.GITHUB_ACTOR;
 const ref = process.env.GITHUB_REF;
 const runID = process.env.GITHUB_RUN_ID;
 const workflow = process.env.GITHUB_WORKFLOW
+const event = process.env.GITHUB_EVENT_NAME
+const token = process.env.GITHUB_TOKEN;
 
 const statusMap = {
   "success": "Completed",
@@ -53,13 +56,12 @@ function getEnvironment(ref) {
 }
 
 /**
- * Get the repository title from the repository string (Attempt to make it clean)
- * @param {string} repository
- * @return {string} The name of the repository.
+ * Get the repo title from the repo string (Attempt to make it clean)
+ * @param {string} repo
+ * @return {string} The name of the repo.
  */
-function getRepositoryTitle(repository) {
-  let slug = repository ? repository.split('/')[1] : '';
-  let words = slug.split('-');
+function getRepositoryTitle(repo) {
+  let words = repo.split('-');
 
   for (let i = 0; i < words.length; i++) {
     let word = words[i];
@@ -76,6 +78,23 @@ function getRepositoryTitle(repository) {
  */
 function getShaShort(fullSha) {
   return fullSha ? fullSha.substring(0, 8) : null;
+}
+
+/**
+ * Ellipsis a string if over length
+ * @param {string} string
+ * @param {string} length
+ * @return {string} The commit msg ellipsis (ommited)
+ */
+function ellipsis(string, length) {
+  if (length == null) {
+    length = 100;
+  }
+  if (string.length > length) {
+    return string.substring(0, length - 3) + '...';
+  } else {
+    return string;
+  }
 }
 
 /**
@@ -97,8 +116,49 @@ function getStatusCode(status) {
   }
 }
 
+/**
+ * Get all the commmit/pr messages
+ * @param {string} msg
+ * @return {Array} messages
+ */
+async function getCommitMessages() {
+  const messages = []
+
+  switch (event) {
+    case 'pull_request': {
+      const pr_title = github.context.payload.pull_request?.title
+      const pr_number = github.context.payload.pull_request?.number
+
+      const octokit = github.getOctokit(token)
+
+      const commitMessages = await octokit.request('GET /repos/{owner}/{repo}/pulls/{pr_number}/commits', {
+        owner,
+        repo,
+        pr_number,
+      })
+
+      if (commitMessages.data[0]) {
+        messages[0] = commitMessages.data[commitMessages.data.length - 1].commit.message
+      }
+
+      // Push the title of the PR
+      messages[1] = pr_title
+      break
+    }
+    case 'push': {
+      if (github.context.payload.commits[0]) {
+        messages[0] = github.context.payload.commits[0].message
+      }
+      messages[1] = ""
+      break
+    }
+  }
+
+  return messages
+}
+
 async function run() {
-  const { IncomingWebhook } = require('@slack/webhook');
+
   let url = core.getInput('slack_webhook')
   let status = core.getInput('status')
 
@@ -118,18 +178,35 @@ async function run() {
   let environment = getEnvironment(ref);
   let version = getTag(ref);
 
-  const repoTitle = getRepositoryTitle(repository)
+  const repoTitle = getRepositoryTitle(repo)
+  const [commit_msg, pr_title] = await getCommitMessages()
+
+  let messageTemplate = ''
+  if (pr_title != "") {
+    const pr_number = github.context.payload.pull_request?.number
+    messageTemplate = `<https://github.com/${owner}/${repo}/pull/${pr_number}|*_${pr_title}_*> \n ${ellipsis(commit_msg, 100)}`
+  } else {
+    messageTemplate = `*_${ellipsis(commit_msg, 100)}_*`
+  }
 
   // Initialize with defaults
   const webhook = new IncomingWebhook(url, {});
 
   const msg = {
+    "text": `${repoTitle} - ${statusMap[status]} - ${environment}`,
     "blocks": [
       {
         "type": "header",
         "text": {
           "type": "plain_text",
           "text": `${emojiIcon} ${repoTitle} - ${statusMap[status]}`
+        }
+      },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": `${messageTemplate}`
         }
       },
       {
@@ -162,7 +239,7 @@ async function run() {
         "elements": [
           {
             "type": "button",
-            "url": `https://github.com/${repository}/actions/runs/${runID}`,
+            "url": `https://github.com/${owner}/${repo}/actions/runs/${runID}`,
             "text": {
               "type": "plain_text",
               "emoji": true,
@@ -178,7 +255,7 @@ async function run() {
   };
 
   if (version) {
-    msg.blocks[1].elements.unshift(
+    msg.blocks[2].elements.unshift(
       {
         "text": `*Version*: ${version}`,
         "type": "mrkdwn"
@@ -189,13 +266,6 @@ async function run() {
   (async () => {
     await webhook.send(msg);
   })();
-
-  // getRecords()
-  //   .catch(e => {
-  //     console.log('There has been a problem: ' + e.message);
-  //   }).then(records => {
-  //     deleteRecord(record['id'])
-  //   });
 }
 
 run();
