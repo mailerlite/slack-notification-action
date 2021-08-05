@@ -179,15 +179,15 @@ async function run() {
   let version = getTag(ref);
 
   const repoTitle = getRepositoryTitle(repo)
-  const [commit_msg, pr_title] = await getCommitMessages()
+  // const [commit_msg, pr_title] = await getCommitMessages()
 
-  let messageTemplate = ''
-  if (pr_title != "") {
-    const pr_number = github.context.payload.pull_request.number
-    messageTemplate = `<https://github.com/${owner}/${repo}/pull/${pr_number}|*_${pr_title}_*> \n ${ellipsis(commit_msg, 100)}`
-  } else {
-    messageTemplate = `*_${ellipsis(commit_msg, 100)}_*`
-  }
+  // let messageTemplate = ''
+  // if (pr_title != "") {
+  //   const pr_number = github.context.payload.pull_request.number
+  //   messageTemplate = `<https://github.com/${owner}/${repo}/pull/${pr_number}|*_${pr_title}_*> \n ${ellipsis(commit_msg, 100)}`
+  // } else {
+  //   messageTemplate = `*_${ellipsis(commit_msg, 100)}_*`
+  // }
 
   // Initialize with defaults
   const webhook = new IncomingWebhook(url, {});
@@ -202,13 +202,13 @@ async function run() {
           "text": `${emojiIcon} ${repoTitle} - ${statusMap[status]}`
         }
       },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": `${messageTemplate}`
-        }
-      },
+      // {
+      //   "type": "section",
+      //   "text": {
+      //     "type": "mrkdwn",
+      //     "text": `${messageTemplate}`
+      //   }
+      // },
       {
         "type": "context",
         "elements": [
@@ -255,7 +255,7 @@ async function run() {
   };
 
   if (version) {
-    msg.blocks[2].elements.unshift(
+    msg.blocks[1].elements.unshift(
       {
         "text": `*Version*: ${version}`,
         "type": "mrkdwn"
