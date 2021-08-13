@@ -12689,15 +12689,17 @@ async function run() {
   const repoTitle = getRepositoryTitle(repo)
 
   const jobName = getJobName(job)
-  // const [commit_msg, pr_title] = await getCommitMessages()
+  const [commit_msg, pr_title] = await getCommitMessages()
 
-  // let messageTemplate = ''
-  // if (pr_title != "") {
-  //   const pr_number = github.context.payload.pull_request.number
-  //   messageTemplate = `<https://github.com/${owner}/${repo}/pull/${pr_number}|*_${pr_title}_*> \n ${ellipsis(commit_msg, 100)}`
-  // } else {
-  //   messageTemplate = `*_${ellipsis(commit_msg, 100)}_*`
-  // }
+  let messageTemplate = ''
+  if (pr_title != "") {
+    const pr_number = github.context.payload.pull_request.number
+    messageTemplate = `<https://github.com/${owner}/${repo}/pull/${pr_number}|*_${pr_title}_*> \n ${ellipsis(commit_msg, 100)}`
+  } else {
+    messageTemplate = `<https://github.com/${owner}/${repo}/commit/${sha}|*_${ellipsis(commit_msg, 100)}_*>`
+  }
+
+  let hasVersion = true;
 
   // Initialize with defaults
   const webhook = new IncomingWebhook(url, {});
@@ -12712,19 +12714,23 @@ async function run() {
           "text": `${emojiIcon} ${repoTitle} - ${statusMap[status]}`
         }
       },
-      // {
-      //   "type": "section",
-      //   "text": {
-      //     "type": "mrkdwn",
-      //     "text": `${messageTemplate}`
-      //   }
-      // },
+      {
+        "type": "section",
+        "text": {
+          "type": "mrkdwn",
+          "text": `${messageTemplate}`
+        }
+      },
       {
         "type": "context",
         "elements": [
           {
             "text": `*Environment*: ${environment}`,
-            "type": "mrkdwn"
+            "type": "mrkdwn",
+            ...version && {
+              "text": `*Version*: ${version}`,
+              "type": "mrkdwn"
+            },
           },
           {
             "text": `*Commit*: ${getShaShort(sha)}`,
@@ -12750,31 +12756,22 @@ async function run() {
       },
       {
         "type": "actions",
-        "elements": [
-          {
-            "type": "button",
-            "url": `https://github.com/${owner}/${repo}/actions/runs/${runID}`,
-            "text": {
-              "type": "plain_text",
-              "emoji": true,
-              "text": statusCode === 1 ? 'View Log' : 'View Log'
-            },
-            ...buttonStyle && {
-              "style": buttonStyle,
-            },
-          }
+        "elements": [{
+          "type": "button",
+          "url": `https://github.com/${owner}/${repo}/actions/runs/${runID}`,
+          "text": {
+            "type": "plain_text",
+            "emoji": true,
+            "text": statusCode === 1 ? 'View Log' : 'View Log'
+          },
+          ...buttonStyle && {
+            "style": buttonStyle,
+          },
+        }
         ]
       }
     ]
   };
-
-  if (version) {
-    msg.blocks[1].elements.unshift(
-      {
-        "text": `*Version*: ${version}`,
-        "type": "mrkdwn"
-      });
-  }
 
   // Send the notification
   (async () => {
