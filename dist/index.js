@@ -12499,7 +12499,9 @@ const actor = process.env.GITHUB_ACTOR;
 const ref = process.env.GITHUB_REF;
 const runID = process.env.GITHUB_RUN_ID;
 const workflow = process.env.GITHUB_WORKFLOW
+const job = process.env.GITHUB_JOB
 const event = process.env.GITHUB_EVENT_NAME
+
 const token = process.env.GITHUB_TOKEN;
 
 const statusMap = {
@@ -12543,6 +12545,22 @@ function getEnvironment(ref) {
   } else {
     return 'Branch'
   }
+}
+
+/**
+ * Get the job id (Attempt to make it clean)
+ * @param {string} job
+ * @return {string} The job id .
+ */
+function getJobName(job) {
+  let words = job.split('_');
+
+  for (let i = 0; i < words.length; i++) {
+    let word = words[i];
+    words[i] = word.charAt(0).toUpperCase() + word.slice(1);
+  }
+
+  return words.join(' ');
 }
 
 /**
@@ -12669,6 +12687,8 @@ async function run() {
   let version = getTag(ref);
 
   const repoTitle = getRepositoryTitle(repo)
+
+  const jobName = getJobName(job)
   // const [commit_msg, pr_title] = await getCommitMessages()
 
   // let messageTemplate = ''
@@ -12716,6 +12736,10 @@ async function run() {
           },
           {
             "text": `*Workflow*: ${workflow}`,
+            "type": "mrkdwn"
+          },
+          {
+            "text": `*Job*: ${jobName}`,
             "type": "mrkdwn"
           },
           {
