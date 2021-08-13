@@ -2,6 +2,9 @@
     "commits": [
         {
             "message": "This is the commit message"
+        },
+        {
+            "message": "This is the last commit message"
         }
     ],
     "pull_request": {

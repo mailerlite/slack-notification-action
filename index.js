@@ -165,7 +165,7 @@ async function getCommitMessages() {
     }
     case 'push': {
       if (github.context.payload.commits[0]) {
-        messages[0] = github.context.payload.commits[0].message
+        messages[0] = github.context.payload.commits[github.context.payload.commits.length - 1].message
       }
       messages[1] = ""
       break
