@@ -12694,9 +12694,9 @@ async function run() {
   let messageTemplate = ''
   if (pr_title != "") {
     const pr_number = github.context.payload.pull_request.number
-    messageTemplate = `<https://github.com/${owner}/${repo}/pull/${pr_number}|*_${pr_title}_*> \n ${ellipsis(commit_msg, 100)}`
+    messageTemplate = `<https://github.com/${owner}/${repo}/pull/${pr_number}| *${pr_title}* > \n _${ellipsis(commit_msg, 100)}_`
   } else {
-    messageTemplate = `<https://github.com/${owner}/${repo}/commit/${sha}|*_${ellipsis(commit_msg, 100)}_*>`
+    messageTemplate = `<https://github.com/${owner}/${repo}/commit/${sha}| *${ellipsis(commit_msg, 100)}* >`
   }
 
   let hasVersion = true;
