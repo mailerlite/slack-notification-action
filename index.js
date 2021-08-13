@@ -95,7 +95,7 @@ function getRepositoryTitle(repo) {
  * @return {string} The short SHA.
  */
 function getShaShort(fullSha) {
-  return fullSha ? fullSha.substring(0, 8) : null;
+  return fullSha ? fullSha.substring(0, 7) : null;
 }
 
 /**
