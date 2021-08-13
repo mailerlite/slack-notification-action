@@ -12595,6 +12595,7 @@ function getShaShort(fullSha) {
  * @return {string} The commit msg ellipsis (ommited)
  */
 function ellipsis(string, length) {
+  string = string.replace(/\s+/g, ' ').trim();
   if (length == null) {
     length = 100;
   }

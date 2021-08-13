@@ -4,7 +4,7 @@
             "message": "This is the commit message"
         },
         {
-            "message": "This is the last commit message"
+            "message": "Merge pull request #39 from remotecompany/bugfix/test-pr-slack-notification \n This is the PR Title"
         }
     ],
     "pull_request": {
