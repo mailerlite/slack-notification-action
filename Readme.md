@@ -10,6 +10,8 @@ Used for sending slack notifications based on status of deployment
 ```yaml
     - name: Slack Notification
       uses: remotecompany/slack-notification-action@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
         matrix: ${{ matrix.version }}
