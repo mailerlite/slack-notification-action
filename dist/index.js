@@ -12670,6 +12670,9 @@ async function run() {
 
   let url = core.getInput('slack_webhook')
   let status = core.getInput('status')
+  let matrix = core.getInput('matrix')
+
+  let matrixSuffix = matrix ? ` (${matrix})` : ''
 
   let statusCode = getStatusCode(status);
 
@@ -12706,13 +12709,13 @@ async function run() {
   const webhook = new IncomingWebhook(url, {});
 
   const msg = {
-    "text": `${repoTitle} - ${statusMap[status]} - ${environment}`,
+    "text": `${emojiIcon} ${repoTitle} - ${statusMap[status]} - ${environment} ${matrixSuffix} `,
     "blocks": [
       {
         "type": "header",
         "text": {
           "type": "plain_text",
-          "text": `${emojiIcon} ${repoTitle} - ${statusMap[status]}`
+          "text": `${emojiIcon} ${repoTitle} - ${statusMap[status]} ${matrixSuffix}`
         }
       },
       {

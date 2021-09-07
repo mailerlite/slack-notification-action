@@ -5,8 +5,11 @@ inputs:
   slack_webhook:
     description: "A valid Slack Incoming Webhook"
     required: true
+  matrix:
+    description: "Specify matrix value to show"
+    required: false
   status:
-    description: Specify success / failure or cancelled.
+    description: "Specify success / failure or cancelled."
     required: true
 runs:
   using: "node12"
