@@ -1,4 +1,4 @@
-# GitHub Action to Send Notificatios to Slack ✉️
+# GitHub Action to Send Notifications to Slack ✉️
 
 Used for sending slack notifications based on status of deployment
 
@@ -12,6 +12,7 @@ Used for sending slack notifications based on status of deployment
       uses: remotecompany/slack-notification-action@v1
       with:
         slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
+        matrix: ${{ matrix.version }}
         status: ${{ job.status }}
 ```
 
