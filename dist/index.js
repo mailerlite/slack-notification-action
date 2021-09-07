@@ -12519,6 +12519,18 @@ function areWeTestingWithJest() {
 }
 
 /**
+ * getMatrix, string based check on git ref
+ * @return {string} v1.0.01.
+ */
+function getMatrix(matrix) {
+  if (matrix) {
+    return matrix
+  }
+
+  return false
+}
+
+/**
  * Get tag, string based check on git ref
  * @return {string} v1.0.01.
  */
@@ -12715,7 +12727,7 @@ async function run() {
         "type": "header",
         "text": {
           "type": "plain_text",
-          "text": `${emojiIcon} ${repoTitle} - ${statusMap[status]} ${matrixSuffix}`
+          "text": `${emojiIcon} ${repoTitle} - ${statusMap[status]}`
         }
       },
       {
@@ -12740,6 +12752,11 @@ async function run() {
             "text": `*Commit*: ${getShaShort(sha)}`,
             "type": "mrkdwn"
           },
+          ...matrix ? [
+            {
+              "text": `*Matrix*: ${matrix}`,
+              "type": "mrkdwn"
+            }] : [],
           {
             "text": `*Author*: ${actor}`,
             "type": "mrkdwn"
