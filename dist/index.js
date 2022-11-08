@@ -16346,7 +16346,7 @@ function getShaShort(fullSha) {
  * @return {string} The commit msg ellipsis (ommited)
  */
 function ellipsis(string, length) {
-  string = string.replace(/\s+/g, ' ').trim();
+  string = string && string.replace(/\s+/g, ' ').trim();
   if (length == null) {
     length = 100;
   }
@@ -16447,6 +16447,7 @@ async function run() {
   const [commit_msg, pr_title] = await getCommitMessages()
 
   let messageTemplate = ''
+  console.log(commit_msg);
   if (pr_title != "") {
     const pr_number = github.context.payload.pull_request.number
     messageTemplate = `<https://github.com/${owner}/${repo}/pull/${pr_number}| *${pr_title}* > \n _${ellipsis(commit_msg, 100)}_`
