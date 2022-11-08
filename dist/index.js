@@ -16350,7 +16350,7 @@ function ellipsis(string, length) {
   if (length == null) {
     length = 100;
   }
-  if (string.length > length) {
+  if (string && string.length > length) {
     return string.substring(0, length - 3) + '...';
   } else {
     return string;
