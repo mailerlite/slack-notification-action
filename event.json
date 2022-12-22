@@ -7,6 +7,9 @@
             "message": "Merge pull request #39 from remotecompany/bugfix/test-pr-slack-notification \n This is the PR Title"
         }
     ],
+    "head_commit": {
+        "message": "Merge pull request #106 from mailergroup/test-pr\n\ntest pr message"
+    },
     "pull_request": {
       "number": 3,
       "title": "Update the README with new information"

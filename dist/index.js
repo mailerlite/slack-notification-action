@@ -16244,9 +16244,9 @@ const event = process.env.GITHUB_EVENT_NAME
 const token = process.env.GITHUB_TOKEN;
 
 const statusMap = {
-  "success": "Completed",
-  "failure": "Failed",
-  "cancelled": "Canceled"
+    "success": "Completed",
+    "failure": "Failed",
+    "cancelled": "Canceled"
 };
 
 /**
@@ -16254,7 +16254,7 @@ const statusMap = {
  * @return {boolean} If we are in jest or not.
  */
 function areWeTestingWithJest() {
-  return process.env.JEST_WORKER_ID !== undefined;
+    return process.env.JEST_WORKER_ID !== undefined;
 }
 
 /**
@@ -16262,11 +16262,11 @@ function areWeTestingWithJest() {
  * @return {string} v1.0.01.
  */
 function getMatrix(matrix) {
-  if (matrix) {
-    return matrix
-  }
+    if (matrix) {
+        return matrix
+    }
 
-  return false
+    return false
 }
 
 /**
@@ -16274,12 +16274,12 @@ function getMatrix(matrix) {
  * @return {string} v1.0.01.
  */
 function getTag(ref) {
-  if (ref.includes("refs/tags")) {
-    const tag = ref.split('/').pop();
-    return tag
-  }
+    if (ref.includes("refs/tags")) {
+        const tag = ref.split('/').pop();
+        return tag
+    }
 
-  return false
+    return false
 }
 
 /**
@@ -16287,15 +16287,15 @@ function getTag(ref) {
  * @return {string} Prod/Dev or Branch.
  */
 function getEnvironment(ref) {
-  if (ref.includes("refs/tags")) {
-    return 'Prod'
-  } else if (ref.includes("refs/heads/main")) {
-    return 'Dev'
-  } else if (ref.includes("refs/heads/master")) {
-    return 'Dev'
-  } else {
-    return 'Branch'
-  }
+    if (ref.includes("refs/tags")) {
+        return 'Prod'
+    } else if (ref.includes("refs/heads/main")) {
+        return 'Dev'
+    } else if (ref.includes("refs/heads/master")) {
+        return 'Dev'
+    } else {
+        return 'Branch'
+    }
 }
 
 /**
@@ -16304,14 +16304,14 @@ function getEnvironment(ref) {
  * @return {string} The job id .
  */
 function getJobName(job) {
-  let words = job.split('_');
+    let words = job.split('_');
 
-  for (let i = 0; i < words.length; i++) {
-    let word = words[i];
-    words[i] = word.charAt(0).toUpperCase() + word.slice(1);
-  }
+    for (let i = 0; i < words.length; i++) {
+        let word = words[i];
+        words[i] = word.charAt(0).toUpperCase() + word.slice(1);
+    }
 
-  return words.join(' ');
+    return words.join(' ');
 }
 
 /**
@@ -16320,14 +16320,14 @@ function getJobName(job) {
  * @return {string} The name of the repo.
  */
 function getRepositoryTitle(repo) {
-  let words = repo.split('-');
+    let words = repo.split('-');
 
-  for (let i = 0; i < words.length; i++) {
-    let word = words[i];
-    words[i] = word.charAt(0).toUpperCase() + word.slice(1);
-  }
+    for (let i = 0; i < words.length; i++) {
+        let word = words[i];
+        words[i] = word.charAt(0).toUpperCase() + word.slice(1);
+    }
 
-  return words.join(' ');
+    return words.join(' ');
 }
 
 /**
@@ -16336,7 +16336,7 @@ function getRepositoryTitle(repo) {
  * @return {string} The short SHA.
  */
 function getShaShort(fullSha) {
-  return fullSha ? fullSha.substring(0, 7) : null;
+    return fullSha ? fullSha.substring(0, 7) : null;
 }
 
 /**
@@ -16346,15 +16346,15 @@ function getShaShort(fullSha) {
  * @return {string} The commit msg ellipsis (ommited)
  */
 function ellipsis(string, length) {
-  string = string.replace(/\s+/g, ' ').trim();
-  if (length == null) {
-    length = 100;
-  }
-  if (string.length > length) {
-    return string.substring(0, length - 3) + '...';
-  } else {
-    return string;
-  }
+    string = string.replace(/\s+/g, ' ').trim();
+    if (length == null) {
+        length = 100;
+    }
+    if (string.length > length) {
+        return string.substring(0, length - 3) + '...';
+    } else {
+        return string;
+    }
 }
 
 /**
@@ -16363,17 +16363,17 @@ function ellipsis(string, length) {
  * @return {int} An int representation of the status.
  */
 function getStatusCode(status) {
-  switch (status) {
-    case "success":
-      return 1;
-    case "cancelled":
-      return 2;
-    case "failure":
-      return 3;
-    default:
-      // return 2 as neutral result
-      return 2;
-  }
+    switch (status) {
+        case "success":
+            return 1;
+        case "cancelled":
+            return 2;
+        case "failure":
+            return 3;
+        default:
+            // return 2 as neutral result
+            return 2;
+    }
 }
 
 /**
@@ -16382,161 +16382,164 @@ function getStatusCode(status) {
  * @return {Array} messages
  */
 async function getCommitMessages() {
-  const messages = []
+    const messages = []
 
-  switch (event) {
-    case 'pull_request': {
-      const pr_title = github.context.payload.pull_request.title
-      const pr_number = github.context.payload.pull_request.number
+    switch (event) {
+        case 'pull_request': {
+            const pr_title = github.context.payload.pull_request.title
+            const pr_number = github.context.payload.pull_request.number
 
-      const octokit = github.getOctokit(token)
+            const octokit = github.getOctokit(token)
 
-      const commitMessages = await octokit.request('GET /repos/{owner}/{repo}/pulls/{pr_number}/commits', {
-        owner,
-        repo,
-        pr_number,
-      })
+            const commitMessages = await octokit.request('GET /repos/{owner}/{repo}/pulls/{pr_number}/commits', {
+                owner,
+                repo,
+                pr_number,
+            })
 
-      if (commitMessages.data[0]) {
-        messages[0] = commitMessages.data[commitMessages.data.length - 1].commit.message
-      }
+            if (commitMessages.data[0]) {
+                messages[0] = commitMessages.data[commitMessages.data.length - 1].commit.message
+            }
 
-      // Push the title of the PR
-      messages[1] = pr_title
-      break
+            // Push the title of the PR
+            messages[1] = pr_title
+            break
+        }
+        case 'push': {
+            if (github.context.payload.commits[0]) {
+                messages[0] = github.context.payload.commits[github.context.payload.commits.length - 1].message
+            }
+            if (github.context.payload.head_commit) {
+                messages[0] = github.context.payload.head_commit.message
+            }
+            messages[1] = ""
+            break
+        }
     }
-    case 'push': {
-      if (github.context.payload.commits[0]) {
-        messages[0] = github.context.payload.commits[github.context.payload.commits.length - 1].message
-      }
-      messages[1] = ""
-      break
-    }
-  }
 
-  return messages
+    return messages
 }
 
 async function run() {
 
-  let url = core.getInput('slack_webhook')
-  let status = core.getInput('status')
-  let matrix = core.getInput('matrix')
+    let url = core.getInput('slack_webhook')
+    let status = core.getInput('status')
+    let matrix = core.getInput('matrix')
 
-  let matrixSuffix = matrix ? ` (${matrix})` : ''
+    let matrixSuffix = matrix ? ` (${matrix})` : ''
 
-  let statusCode = getStatusCode(status);
+    let statusCode = getStatusCode(status);
 
-  var buttonStyle = ''
-  var emojiIcon = ':o:'
+    var buttonStyle = ''
+    var emojiIcon = ':o:'
 
-  if (statusCode === 1) {
-    buttonStyle = "primary"
-    emojiIcon = ":rocket:"
-  } else if (statusCode === 3) {
-    buttonStyle = "danger"
-    emojiIcon = ":x:"
-  }
+    if (statusCode === 1) {
+        buttonStyle = "primary"
+        emojiIcon = ":rocket:"
+    } else if (statusCode === 3) {
+        buttonStyle = "danger"
+        emojiIcon = ":x:"
+    }
 
-  let environment = getEnvironment(ref);
-  let version = getTag(ref);
+    let environment = getEnvironment(ref);
+    let version = getTag(ref);
 
-  const repoTitle = getRepositoryTitle(repo)
+    const repoTitle = getRepositoryTitle(repo)
 
-  const jobName = getJobName(job)
-  const [commit_msg, pr_title] = await getCommitMessages()
+    const jobName = getJobName(job)
+    const [commit_msg, pr_title] = await getCommitMessages()
 
-  let messageTemplate = ''
-  if (pr_title != "") {
-    const pr_number = github.context.payload.pull_request.number
-    messageTemplate = `<https://github.com/${owner}/${repo}/pull/${pr_number}| *${pr_title}* > \n _${ellipsis(commit_msg, 100)}_`
-  } else {
-    messageTemplate = `<https://github.com/${owner}/${repo}/commit/${sha}| *${ellipsis(commit_msg, 100)}* >`
-  }
+    let messageTemplate = ''
+    if (pr_title != "") {
+        const pr_number = github.context.payload.pull_request.number
+        messageTemplate = `<https://github.com/${owner}/${repo}/pull/${pr_number}| *${pr_title}* > \n _${ellipsis(commit_msg, 100)}_`
+    } else {
+        messageTemplate = `<https://github.com/${owner}/${repo}/commit/${sha}| *${ellipsis(commit_msg, 100)}* >`
+    }
 
-  let hasVersion = true;
+    let hasVersion = true;
 
-  // Initialize with defaults
-  const webhook = new IncomingWebhook(url, {});
+    // Initialize with defaults
+    const webhook = new IncomingWebhook(url, {});
 
-  const msg = {
-    "text": `${emojiIcon} ${repoTitle} - ${statusMap[status]} - ${environment} ${matrixSuffix} `,
-    "blocks": [
-      {
-        "type": "header",
-        "text": {
-          "type": "plain_text",
-          "text": `${emojiIcon} ${repoTitle} - ${statusMap[status]}`
-        }
-      },
-      {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": `${messageTemplate}`
-        }
-      },
-      {
-        "type": "context",
-        "elements": [
-          {
-            "text": `*Environment*: ${environment}`,
-            "type": "mrkdwn",
-            ...version && {
-              "text": `*Version*: ${version}`,
-              "type": "mrkdwn"
-            },
-          },
-          {
-            "text": `*Commit*: ${getShaShort(sha)}`,
-            "type": "mrkdwn"
-          },
-          ...matrix ? [
+    const msg = {
+        "text": `${emojiIcon} ${repoTitle} - ${statusMap[status]} - ${environment} ${matrixSuffix} `,
+        "blocks": [
             {
-              "text": `*Matrix*: ${matrix}`,
-              "type": "mrkdwn"
-            }] : [],
-          {
-            "text": `*Author*: ${actor}`,
-            "type": "mrkdwn"
-          },
-          {
-            "text": `*Workflow*: ${workflow}`,
-            "type": "mrkdwn"
-          },
-          {
-            "text": `*Job*: ${jobName}`,
-            "type": "mrkdwn"
-          },
-          {
-            "text": `*Run ID*: ${runID}`,
-            "type": "mrkdwn"
-          }
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": `${emojiIcon} ${repoTitle} - ${statusMap[status]}`
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": `${messageTemplate}`
+                }
+            },
+            {
+                "type": "context",
+                "elements": [
+                    {
+                        "text": `*Environment*: ${environment}`,
+                        "type": "mrkdwn",
+                        ...version && {
+                            "text": `*Version*: ${version}`,
+                            "type": "mrkdwn"
+                        },
+                    },
+                    {
+                        "text": `*Commit*: ${getShaShort(sha)}`,
+                        "type": "mrkdwn"
+                    },
+                    ...matrix ? [
+                        {
+                            "text": `*Matrix*: ${matrix}`,
+                            "type": "mrkdwn"
+                        }] : [],
+                    {
+                        "text": `*Author*: ${actor}`,
+                        "type": "mrkdwn"
+                    },
+                    {
+                        "text": `*Workflow*: ${workflow}`,
+                        "type": "mrkdwn"
+                    },
+                    {
+                        "text": `*Job*: ${jobName}`,
+                        "type": "mrkdwn"
+                    },
+                    {
+                        "text": `*Run ID*: ${runID}`,
+                        "type": "mrkdwn"
+                    }
+                ]
+            },
+            {
+                "type": "actions",
+                "elements": [{
+                    "type": "button",
+                    "url": `https://github.com/${owner}/${repo}/actions/runs/${runID}`,
+                    "text": {
+                        "type": "plain_text",
+                        "emoji": true,
+                        "text": statusCode === 1 ? 'View Log' : 'View Log'
+                    },
+                    ...buttonStyle && {
+                        "style": buttonStyle,
+                    },
+                }
+                ]
+            }
         ]
-      },
-      {
-        "type": "actions",
-        "elements": [{
-          "type": "button",
-          "url": `https://github.com/${owner}/${repo}/actions/runs/${runID}`,
-          "text": {
-            "type": "plain_text",
-            "emoji": true,
-            "text": statusCode === 1 ? 'View Log' : 'View Log'
-          },
-          ...buttonStyle && {
-            "style": buttonStyle,
-          },
-        }
-        ]
-      }
-    ]
-  };
+    };
 
-  // Send the notification
-  (async () => {
-    await webhook.send(msg);
-  })();
+    // Send the notification
+    (async () => {
+        await webhook.send(msg);
+    })();
 }
 
 run();
