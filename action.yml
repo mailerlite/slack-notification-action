@@ -12,5 +12,5 @@ inputs:
     description: "Specify success / failure or cancelled."
     required: true
 runs:
-  using: "node12"
+  using: "node16"
   main: "dist/index.js"
