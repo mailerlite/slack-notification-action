@@ -9,7 +9,7 @@ Used for sending slack notifications based on status of deployment
 #### Run using slack webhook url
 ```yaml
     - name: Slack Notification
-      uses: mailergroup/slack-notification-action@v1-beta
+      uses: mailerlite/slack-notification-action@v1-beta
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
