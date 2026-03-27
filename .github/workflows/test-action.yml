@@ -1,0 +1,26 @@
+name: Test Action
+
+on:
+  workflow_dispatch:
+    inputs:
+      status:
+        description: "Status to test"
+        required: true
+        default: "success"
+        type: choice
+        options:
+          - success
+          - failure
+          - cancelled
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Slack Notification Action
+        uses: ./
+        with:
+          slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
+          status: ${{ inputs.status }}
