@@ -186,6 +186,11 @@ async function getCommitMessages() {
             messages[1] = ""
             break
         }
+        case 'workflow_dispatch': {
+            messages[0] = "Manually triggered"
+            messages[1] = "Test Notification"
+            break
+        }
     }
 
     return messages
@@ -221,9 +226,11 @@ async function run() {
     const [commit_msg, pr_title] = await getCommitMessages()
 
     let messageTemplate = ''
-    if (pr_title != "") {
+    if (pr_title && github.context.payload.pull_request) {
         const pr_number = github.context.payload.pull_request.number
         messageTemplate = `<https://github.com/${owner}/${repo}/pull/${pr_number}| *${pr_title}* > \n _${ellipsis(commit_msg, 100)}_`
+    } else if (pr_title) {
+        messageTemplate = `*${pr_title}* \n _${ellipsis(commit_msg, 100)}_`
     } else {
         messageTemplate = `<https://github.com/${owner}/${repo}/commit/${sha}| *${ellipsis(commit_msg, 100)}* >`
     }
