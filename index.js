@@ -221,7 +221,7 @@ async function run() {
     const [commit_msg, pr_title] = await getCommitMessages()
 
     let messageTemplate = ''
-    if (pr_title != "") {
+    if (pr_title) {
         const pr_number = github.context.payload.pull_request.number
         messageTemplate = `<https://github.com/${owner}/${repo}/pull/${pr_number}| *${pr_title}* > \n _${ellipsis(commit_msg, 100)}_`
     } else {
